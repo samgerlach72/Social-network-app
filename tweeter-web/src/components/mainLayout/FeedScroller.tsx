@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { AuthToken, FakeData, Status, User, Type } from "tweeter-shared";
+import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useRef, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ToastInfoContext } from "../toaster/ToastProvider";
 import { Link } from "react-router-dom";
+import Post from "../statusItem/Post";
 
 export const PAGE_SIZE = 10;
 
@@ -136,30 +137,7 @@ const FeedScroller = () => {
                     </h2>
                     {item.formattedDate}
                     <br />
-                    {item.segments.map((segment, index) =>
-                      segment.type === Type.alias ? (
-                        <Link
-                          key={index}
-                          to={segment.text}
-                          onClick={(event) => navigateToUser(event)}
-                        >
-                          {segment.text}
-                        </Link>
-                      ) : segment.type === Type.url ? (
-                        <a
-                          key={index}
-                          href={segment.text}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {segment.text}
-                        </a>
-                      ) : segment.type === Type.newline ? (
-                        <br key={index} />
-                      ) : (
-                        segment.text
-                      )
-                    )}
+                    <Post status={item} />
                   </div>
                 </div>
               </div>
