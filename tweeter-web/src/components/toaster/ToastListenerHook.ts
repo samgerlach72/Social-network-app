@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { ToastInfoContext } from "../toaster/ToastProvider";
+import useToaster from "./ToastHook";
 
 interface ToastListener {
   displayInfoMessage: (
@@ -13,7 +12,7 @@ interface ToastListener {
 
 const useToastListener = (): ToastListener => {
   const { displayInfoToast, displayErrorToast, deleteLastInfoToast } =
-    useContext(ToastInfoContext);
+    useToaster();
 
   return {
     displayInfoMessage: displayInfoToast,
