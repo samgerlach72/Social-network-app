@@ -2,12 +2,12 @@ import "./PostStatus.css";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { ToastInfoContext } from "../toaster/ToastProvider";
 import { AuthToken, Status } from "tweeter-shared";
+import useToastListener from "../toaster/ToastListenerHook";
 
 const PostStatus = () => {
-  const { displayErrorToast, displayInfoToast, deleteLastInfoToast } =
-    useContext(ToastInfoContext);
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
+    useToastListener();
 
   const { currentUser, authToken } = useContext(UserInfoContext);
   const [post, setPost] = useState("");
@@ -16,19 +16,18 @@ const PostStatus = () => {
     event.preventDefault();
 
     try {
-      displayInfoToast("Posting status...", 0);
+      displayInfoMessage("Posting status...", 0);
 
       let status = new Status(post, currentUser!, Date.now());
 
       await postStatus(authToken!, status);
 
-      deleteLastInfoToast();
+      clearLastInfoMessage();
       setPost("");
-      displayInfoToast("Status posted!", 2000);
+      displayInfoMessage("Status posted!", 2000);
     } catch (error) {
-      displayErrorToast(
-        `Failed to post the status because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to post the status because of exception: ${error}`
       );
     }
   };

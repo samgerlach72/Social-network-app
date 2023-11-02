@@ -1,7 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { useContext } from "react";
-import { ToastInfoContext } from "../toaster/ToastProvider";
+import useToastListener from "../toaster/ToastListenerHook";
 
 interface Props {
   headingText: string;
@@ -15,10 +14,10 @@ interface Props {
 }
 
 const AuthenticationFormLayout = (props: Props) => {
-  const { displayInfoToast } = useContext(ToastInfoContext);
+  const { displayInfoMessage } = useToastListener();
 
-  const displayInfoMessage = (message: string): void => {
-    displayInfoToast(message, 3000, "text-white bg-primary");
+  const displayInfoMessageWithDarkBackground = (message: string): void => {
+    displayInfoMessage(message, 3000, "text-white bg-primary");
   };
 
   return (
@@ -45,7 +44,7 @@ const AuthenticationFormLayout = (props: Props) => {
                 type="button"
                 className="btn btn-link btn-floating mx-1"
                 onClick={() =>
-                  displayInfoMessage("Google registration is not implemented.")
+                  displayInfoMessageWithDarkBackground("Google registration is not implemented.")
                 }
               >
                 <OverlayTrigger
@@ -60,7 +59,7 @@ const AuthenticationFormLayout = (props: Props) => {
                 type="button"
                 className="btn btn-link btn-floating mx-1"
                 onClick={() =>
-                  displayInfoMessage(
+                  displayInfoMessageWithDarkBackground(
                     "Facebook registration is not implemented."
                   )
                 }
@@ -77,7 +76,7 @@ const AuthenticationFormLayout = (props: Props) => {
                 type="button"
                 className="btn btn-link btn-floating mx-1"
                 onClick={() =>
-                  displayInfoMessage("Twitter registration is not implemented.")
+                  displayInfoMessageWithDarkBackground("Twitter registration is not implemented.")
                 }
               >
                 <OverlayTrigger
@@ -92,7 +91,7 @@ const AuthenticationFormLayout = (props: Props) => {
                 type="button"
                 className="btn btn-link btn-floating mx-1"
                 onClick={() =>
-                  displayInfoMessage(
+                  displayInfoMessageWithDarkBackground(
                     "LinkedIn registration is not implemented."
                   )
                 }
@@ -109,7 +108,7 @@ const AuthenticationFormLayout = (props: Props) => {
                 type="button"
                 className="btn btn-link btn-floating mx-1"
                 onClick={() =>
-                  displayInfoMessage("Github registration is not implemented.")
+                  displayInfoMessageWithDarkBackground("Github registration is not implemented.")
                 }
               >
                 <OverlayTrigger

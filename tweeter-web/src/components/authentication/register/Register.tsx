@@ -6,8 +6,8 @@ import { ChangeEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, FakeData, User } from "tweeter-shared";
-import { ToastInfoContext } from "../../toaster/ToastProvider";
 import { Buffer } from "buffer";
+import useToastListener from "../../toaster/ToastListenerHook";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,7 +23,7 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { updateUserInfo } = useContext(UserInfoContext);
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
     return !firstName || !lastName || !alias || !password || !imageUrl;
@@ -73,9 +73,8 @@ const Register = () => {
       updateUserInfo(user, user, authToken, rememberMeRef.current);
       navigate("/");
     } catch (error) {
-      displayErrorToast(
-        `Failed to register user because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to register user because of exception: ${error}`
       );
     }
   };

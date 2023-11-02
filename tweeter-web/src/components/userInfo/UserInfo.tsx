@@ -3,15 +3,15 @@ import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ToastInfoContext } from "../toaster/ToastProvider";
 import { AuthToken, FakeData, User } from "tweeter-shared";
+import useToastListener from "../toaster/ToastListenerHook";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
   const [followeesCount, setFolloweesCount] = useState(-1);
   const [followersCount, setFollowersCount] = useState(-1);
-  const { displayErrorToast, displayInfoToast, deleteLastInfoToast } =
-    useContext(ToastInfoContext);
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
+    useToastListener();
 
   const { currentUser, authToken, displayedUser, setDisplayedUser } =
     useContext(UserInfoContext);
@@ -40,9 +40,8 @@ const UserInfo = () => {
         );
       }
     } catch (error) {
-      displayErrorToast(
-        `Failed to determine follower status because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to determine follower status because of exception: ${error}`
       );
     }
   };
@@ -63,9 +62,8 @@ const UserInfo = () => {
     try {
       setFolloweesCount(await getFolloweesCount(authToken, displayedUser));
     } catch (error) {
-      displayErrorToast(
-        `Failed to get followees count because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to get followees count because of exception: ${error}`
       );
     }
   };
@@ -85,9 +83,8 @@ const UserInfo = () => {
     try {
       setFollowersCount(await getFollowersCount(authToken, displayedUser));
     } catch (error) {
-      displayErrorToast(
-        `Failed to get followers count because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to get followers count because of exception: ${error}`
       );
     }
   };
@@ -111,22 +108,21 @@ const UserInfo = () => {
     event.preventDefault();
 
     try {
-      displayInfoToast(`Adding ${displayedUser!.name} to followers...`, 0);
+      displayInfoMessage(`Adding ${displayedUser!.name} to followers...`, 0);
 
       let [followersCount, followeesCount] = await follow(
         authToken!,
         displayedUser!
       );
 
-      deleteLastInfoToast();
+      clearLastInfoMessage();
 
       setIsFollower(true);
       setFollowersCount(followersCount);
       setFolloweesCount(followeesCount);
     } catch (error) {
-      displayErrorToast(
-        `Failed to follow user because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to follow user because of exception: ${error}`
       );
     }
   };
@@ -152,22 +148,24 @@ const UserInfo = () => {
     event.preventDefault();
 
     try {
-      displayInfoToast(`Removing ${displayedUser!.name} from followers...`, 0);
+      displayInfoMessage(
+        `Removing ${displayedUser!.name} from followers...`,
+        0
+      );
 
       let [followersCount, followeesCount] = await unfollow(
         authToken!,
         displayedUser!
       );
 
-      deleteLastInfoToast();
+      clearLastInfoMessage();
 
       setIsFollower(false);
       setFollowersCount(followersCount);
       setFolloweesCount(followeesCount);
     } catch (error) {
-      displayErrorToast(
-        `Failed to unfollow user because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to unfollow user because of exception: ${error}`
       );
     }
   };

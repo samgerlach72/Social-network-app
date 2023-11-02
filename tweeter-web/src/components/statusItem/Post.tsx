@@ -2,7 +2,7 @@ import { AuthToken, FakeData, Status, User, Type } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { ToastInfoContext } from "../toaster/ToastProvider";
+import useToastListener from "../toaster/ToastListenerHook";
 
 interface Props {
   status: Status;
@@ -11,7 +11,7 @@ interface Props {
 const Post = (props: Props) => {
   const { setDisplayedUser, currentUser, authToken } =
     useContext(UserInfoContext);
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
 
   const navigateToUser = async (event: React.MouseEvent): Promise<void> => {
     event.preventDefault();
@@ -29,7 +29,7 @@ const Post = (props: Props) => {
         }
       }
     } catch (error) {
-      displayErrorToast(`Failed to get user because of exception: ${error}`, 0);
+      displayErrorMessage(`Failed to get user because of exception: ${error}`);
     }
   };
 

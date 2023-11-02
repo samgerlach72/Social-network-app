@@ -3,13 +3,13 @@ import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { useEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { AuthToken, FakeData, User } from "tweeter-shared";
-import { ToastInfoContext } from "../toaster/ToastProvider";
 import UserItem from "../userItem/UserItem";
+import useToastListener from "../toaster/ToastListenerHook";
 
 export const PAGE_SIZE = 10;
 
 const FollowingScroller = () => {
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<User[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [lastItem, setLastItem] = useState<User | null>(null);
@@ -22,8 +22,7 @@ const FollowingScroller = () => {
   const addItems = (newItems: User[]) =>
     setItems([...itemsReference.current, ...newItems]);
 
-  const { displayedUser, authToken } =
-    useContext(UserInfoContext);
+  const { displayedUser, authToken } = useContext(UserInfoContext);
 
   // Load initial items
   useEffect(() => {
@@ -46,9 +45,8 @@ const FollowingScroller = () => {
         addItems(newItems);
       }
     } catch (error) {
-      displayErrorToast(
-        `Failed to load followees because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to load followees because of exception: ${error}`
       );
     }
   };

@@ -4,29 +4,28 @@ import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { ToastInfoContext } from "../toaster/ToastProvider";
 import { AuthToken } from "tweeter-shared";
+import useToastListener from "../toaster/ToastListenerHook";
 
 const AppNavbar = () => {
   const location = useLocation();
   const { authToken, clearUserInfo } = useContext(UserInfoContext);
   const navigate = useNavigate();
-  const { displayInfoToast, displayErrorToast, deleteLastInfoToast } =
-    useContext(ToastInfoContext);
+  const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
+    useToastListener();
 
   const logOut = async () => {
-    displayInfoToast("Logging Out...", 0);
+    displayInfoMessage("Logging Out...", 0);
 
     try {
       await logout(authToken!);
 
-      deleteLastInfoToast();
+      clearLastInfoMessage();
       clearUserInfo();
       navigate("/login");
     } catch (error) {
-      displayErrorToast(
-        `Failed to log user out because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to log user out because of exception: ${error}`
       );
     }
   };

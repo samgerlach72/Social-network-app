@@ -2,14 +2,14 @@ import { AuthToken, FakeData, User } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { useContext } from "react";
-import { ToastInfoContext } from "../toaster/ToastProvider";
+import useToastListener from "../toaster/ToastListenerHook";
 
 interface Props {
   value: User;
 }
 
 const UserItem = (props: Props) => {
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
   const { setDisplayedUser, currentUser, authToken } =
     useContext(UserInfoContext);
 
@@ -29,7 +29,7 @@ const UserItem = (props: Props) => {
         }
       }
     } catch (error) {
-      displayErrorToast(`Failed to get user because of exception: ${error}`, 0);
+      displayErrorMessage(`Failed to get user because of exception: ${error}`);
     }
   };
 

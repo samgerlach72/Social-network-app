@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, FakeData, User } from "tweeter-shared";
-import { ToastInfoContext } from "../../toaster/ToastProvider";
+import useToastListener from "../../toaster/ToastListenerHook";
 
 interface Props {
   originalUrl?: string;
@@ -19,7 +19,7 @@ const Login = (props: Props) => {
 
   const navigate = useNavigate();
   const { updateUserInfo } = useContext(UserInfoContext);
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
 
   const rememberMeRef = useRef(rememberMe);
   rememberMeRef.current = rememberMe;
@@ -40,9 +40,8 @@ const Login = (props: Props) => {
         navigate("/");
       }
     } catch (error) {
-      displayErrorToast(
-        `Failed to log user in because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to log user in because of exception: ${error}`
       );
     }
   };

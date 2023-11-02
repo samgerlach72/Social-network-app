@@ -3,14 +3,14 @@ import { UserInfoContext } from "../userInfo/UserInfoProvider";
 import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useRef, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ToastInfoContext } from "../toaster/ToastProvider";
 import { Link } from "react-router-dom";
 import Post from "../statusItem/Post";
+import useToastListener from "../toaster/ToastListenerHook";
 
 export const PAGE_SIZE = 10;
 
 const StoryScroller = () => {
-  const { displayErrorToast } = useContext(ToastInfoContext);
+  const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<Status[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   const [lastItem, setLastItem] = useState<Status | null>(null);
@@ -47,9 +47,8 @@ const StoryScroller = () => {
         addItems(newItems);
       }
     } catch (error) {
-      displayErrorToast(
-        `Failed to load story items because of exception: ${error}`,
-        0
+      displayErrorMessage(
+        `Failed to load story items because of exception: ${error}`
       );
     }
   };
@@ -79,7 +78,7 @@ const StoryScroller = () => {
         }
       }
     } catch (error) {
-      displayErrorToast(`Failed to get user because of exception: ${error}`, 0);
+      displayErrorMessage(`Failed to get user because of exception: ${error}`);
     }
   };
 
