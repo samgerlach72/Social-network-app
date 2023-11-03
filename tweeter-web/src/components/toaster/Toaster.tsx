@@ -1,15 +1,14 @@
 import "./Toaster.css";
 import { useEffect } from "react";
-import { useContext } from "react";
-import { ToastInfoContext } from "./ToastProvider";
 import { Toast } from "react-bootstrap";
+import useToaster from "./ToastHook";
 
 interface Props {
   position: string;
 }
 
 const Toaster = ({ position }: Props) => {
-  const { toastList, deleteToast } = useContext(ToastInfoContext);
+  const { toastList, deleteToast } = useToaster();
 
   useEffect(() => {
     const interval = setInterval(() => {
