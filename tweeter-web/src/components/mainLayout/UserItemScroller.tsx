@@ -1,14 +1,24 @@
 import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { useEffect, useRef, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
+import { useState, useRef, useEffect } from "react";
 import { ToastInfoContext } from "../toaster/ToastProvider";
+import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
 
 export const PAGE_SIZE = 10;
 
-const FollowingScroller = () => {
+interface Props {
+  loadItems: (
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastFollower: User | null
+  ) => Promise<[User[], boolean]>;
+  itemDescription: string;
+}
+
+const UserItemScroller = (props: Props) => {
   const { displayErrorToast } = useContext(ToastInfoContext);
   const [items, setItems] = useState<User[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
@@ -22,8 +32,7 @@ const FollowingScroller = () => {
   const addItems = (newItems: User[]) =>
     setItems([...itemsReference.current, ...newItems]);
 
-  const { displayedUser, authToken } =
-    useContext(UserInfoContext);
+  const { displayedUser, authToken } = useContext(UserInfoContext);
 
   // Load initial items
   useEffect(() => {
@@ -34,7 +43,7 @@ const FollowingScroller = () => {
   const loadMoreItems = async () => {
     try {
       if (hasMoreItems) {
-        let [newItems, hasMore] = await loadMoreFollowees(
+        let [newItems, hasMore] = await props.loadItems(
           authToken!,
           displayedUser!,
           PAGE_SIZE,
@@ -47,20 +56,10 @@ const FollowingScroller = () => {
       }
     } catch (error) {
       displayErrorToast(
-        `Failed to load followees because of exception: ${error}`,
+        `Failed to load ${props.itemDescription} because of exception: ${error}`,
         0
       );
     }
-  };
-
-  const loadMoreFollowees = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastFollowee: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastFollowee, pageSize, user);
   };
 
   return (
@@ -85,4 +84,4 @@ const FollowingScroller = () => {
   );
 };
 
-export default FollowingScroller;
+export default UserItemScroller;
