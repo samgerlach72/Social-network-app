@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { UserInfoContext } from "../userInfo/UserInfoProvider";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { useState, useRef, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
@@ -8,7 +8,17 @@ import useToastListener from "../toaster/ToastListenerHook";
 
 export const PAGE_SIZE = 10;
 
-const FollowersScroller = () => {
+interface Props {
+  loadItems: (
+    authToken: AuthToken,
+    user: User,
+    pageSize: number,
+    lastFollower: User | null
+  ) => Promise<[User[], boolean]>;
+  itemDescription: string;
+}
+
+const UserItemScroller = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
   const [items, setItems] = useState<User[]>([]);
   const [hasMoreItems, setHasMoreItems] = useState(true);
@@ -33,7 +43,7 @@ const FollowersScroller = () => {
   const loadMoreItems = async () => {
     try {
       if (hasMoreItems) {
-        let [newItems, hasMore] = await loadMoreFollowers(
+        let [newItems, hasMore] = await props.loadItems(
           authToken!,
           displayedUser!,
           PAGE_SIZE,
@@ -49,16 +59,6 @@ const FollowersScroller = () => {
         `Failed to load followers because of exception: ${error}`
       );
     }
-  };
-
-  const loadMoreFollowers = async (
-    authToken: AuthToken,
-    user: User,
-    pageSize: number,
-    lastFollower: User | null
-  ): Promise<[User[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastFollower, pageSize, user);
   };
 
   return (
@@ -83,4 +83,4 @@ const FollowersScroller = () => {
   );
 };
 
-export default FollowersScroller;
+export default UserItemScroller;

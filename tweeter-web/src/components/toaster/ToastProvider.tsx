@@ -14,22 +14,22 @@ interface ToastInfo {
     message: string,
     duration: number,
     bootstrapClasses?: string
-  ) => string;
+  ) => void;
   displayErrorToast: (
     message: string,
     duration: number,
     bootstrapClasses?: string
-  ) => string;
+  ) => void;
   displayInfoToast: (
     message: string,
     duration: number,
     bootstrapClasses?: string
-  ) => string;
+  ) => void;
   displayWarningToast: (
     message: string,
     duration: number,
     bootstrapClasses?: string
-  ) => string;
+  ) => void;
   deleteToast: (id: string) => void;
   deleteAllToasts: () => void;
   deleteAllSuccessToasts: () => void;
@@ -45,10 +45,10 @@ interface ToastInfo {
 
 const defaultToastInfo: ToastInfo = {
   toastList: [],
-  displaySuccessToast: (message: string, duration: number) => "",
-  displayErrorToast: (message: string, duration: number) => "",
-  displayInfoToast: (message: string, duration: number) => "",
-  displayWarningToast: (message: string, duration: number) => "",
+  displaySuccessToast: (message: string, duration: number) => null,
+  displayErrorToast: (message: string, duration: number) => null,
+  displayInfoToast: (message: string, duration: number) => null,
+  displayWarningToast: (message: string, duration: number) => null,
   deleteToast: (toast: string) => null,
   deleteAllToasts: () => null,
   deleteAllSuccessToasts: () => null,
