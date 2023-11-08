@@ -56,7 +56,7 @@ const UserItemScroller = (props: Props) => {
       }
     } catch (error) {
       displayErrorMessage(
-        `Failed to load followers because of exception: ${error}`
+        `Failed to load ${props.itemDescription} because of exception: ${error}`
       );
     }
   };
