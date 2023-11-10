@@ -13,7 +13,7 @@ interface Props {
     authToken: AuthToken,
     user: User,
     pageSize: number,
-    lastFollower: User | null
+    lastItem: User | null
   ) => Promise<[User[], boolean]>;
   itemDescription: string;
 }

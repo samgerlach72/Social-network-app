@@ -43,20 +43,20 @@ const AuthenticatedRoutes = () => {
     authToken: AuthToken,
     user: User,
     pageSize: number,
-    lastFollower: User | null
+    lastItem: User | null
   ): Promise<[User[], boolean]> => {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastFollower, pageSize, user);
+    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
   };
 
   const loadMoreFollowees = async (
     authToken: AuthToken,
     user: User,
     pageSize: number,
-    lastFollowee: User | null
+    lastItem: User | null
   ): Promise<[User[], boolean]> => {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastFollowee, pageSize, user);
+    return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
   };
 
   return (
