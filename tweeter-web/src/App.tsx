@@ -61,7 +61,7 @@ const AuthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/*" element={<MainLayout />}>
+      <Route element={<MainLayout />}>
         <Route index element={<Navigate to="/feed" />} />
         <Route path="feed" element={<FeedScroller />} />
         <Route path="story" element={<StoryScroller />} />
