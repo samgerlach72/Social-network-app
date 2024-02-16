@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { UserService } from "../model/model/UserService";
 import { Buffer } from "buffer";
 import { To, NavigateOptions } from "react-router-dom";
 

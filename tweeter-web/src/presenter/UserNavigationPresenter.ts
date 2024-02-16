@@ -1,5 +1,5 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
+import { UserService } from "../model/model/UserService";
 
 export interface UserNavigationView {
     displayErrorMessage: (message: string) => void;
