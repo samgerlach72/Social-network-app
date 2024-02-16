@@ -32,8 +32,7 @@ const defaultUserInfo: UserInfo = {
   setDisplayedUser: (user) => null,
 };
 
-export const UserInfoContext: Context<UserInfo> =
-  createContext<UserInfo>(defaultUserInfo);
+export const UserInfoContext: Context<UserInfo> = createContext<UserInfo>(defaultUserInfo);
 
 interface Props {
   children: React.ReactNode;
