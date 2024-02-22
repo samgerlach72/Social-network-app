@@ -1,22 +1,22 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/model/UserService";
+import { FollowService } from "../model/model/FollowService";
 
 export interface UserInfoView {
     displayErrorMessage: (message: string) => void;
-    setIsFollower: React.Dispatch<React.SetStateAction<boolean>>,
-    setFolloweesCount: React.Dispatch<React.SetStateAction<number>>,
-    setFollowersCount: React.Dispatch<React.SetStateAction<number>>,
-    displayInfoMessage: (message: string, duration: number, bootstrapClasses?: string | undefined) => void,
-    clearLastInfoMessage: () => void
+    setIsFollower: React.Dispatch<React.SetStateAction<boolean>>;
+    setFolloweesCount: React.Dispatch<React.SetStateAction<number>>;
+    setFollowersCount: React.Dispatch<React.SetStateAction<number>>;
+    displayInfoMessage: (message: string, duration: number, bootstrapClasses?: string | undefined) => void;
+    clearLastInfoMessage: () => void;
 }
 
 export class UserInfoPresenter{
     private view: UserInfoView;
-    private service: UserService;
+    private service: FollowService;
 
     public constructor(view: UserInfoView){
         this.view = view;
-        this.service = new UserService();
+        this.service = new FollowService();
     }
     public async setIsFollowerStatus(
         authToken: AuthToken,

@@ -1,6 +1,6 @@
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useRef, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
@@ -34,6 +34,11 @@ const Register = () => {
     presenter.doRegister(firstName, lastName, alias, password, imageUrl, imageBytes, rememberMeRef)
   };
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    presenter.handleImageFile(file, imageUrl, imageBytes);
+  };
+
   const inputFieldGenerator = () => {
     return (
       <>
@@ -65,7 +70,7 @@ const Register = () => {
             type="file"
             className="d-inline-block py-5 px-4 form-control bottom"
             id="imageFileInput"
-            onChange={(event) => presenter.handleFileChange(event, imageUrl, imageBytes)}
+            onChange={handleFileChange}
           />
           <label htmlFor="imageFileInput">User Image</label>
           <img src={imageUrl} className="img-thumbnail" alt=""></img>

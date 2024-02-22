@@ -1,4 +1,3 @@
-import { ChangeEvent } from "react";
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/model/UserService";
 import { Buffer } from "buffer";
@@ -10,40 +9,11 @@ export interface RegisterView {
     navigate: (to: To, options?: NavigateOptions | undefined) => void,
     setImageBytes: React.Dispatch<React.SetStateAction<Uint8Array>>,
     setImageUrl: React.Dispatch<React.SetStateAction<string>>
-
 }
 
 export class RegisterPresenter{
     private view: RegisterView;
     private service: UserService;
-    // public firstName: string = "these";
-    // public lastName: string = "are";
-    // public alias: string = "test";
-    // public password: string = "strings";
-    // public rememberMe: boolean = false;
-    // public imageUrl: string = "";
-    // public imageBytes: Uint8Array = new Uint8Array();
-    // // public set firstName(value: string) {
-    // //     this._firstName = value;
-    // // }
-    // // public set lastName(value: string) {
-    // //     this._lastName = value;
-    // // }
-    // // public set alias(value: string) {
-    // //     this._alias = value;
-    // // }
-    // // public set password(value: string) {
-    // //     this._password = value;
-    // // }
-    // public setRememberMe(value: boolean): void {
-    //     this.rememberMe = value;
-    // }
-    // // public get imageUrl(): string {
-    // //     return this._imageUrl;
-    // // }
-    // // public set imageUrl(value: string){
-    // //     this._imageUrl = value;
-    // // }
 
     public constructor(view: RegisterView){
         this.view = view;
@@ -53,11 +23,6 @@ export class RegisterPresenter{
     public checkSubmitButtonStatus(firstName: string, lastName: string, alias: string, password: string, imageUrl: string): boolean {
         console.log("first");
         return !firstName || !lastName || !alias || !password || !imageUrl;
-    };
-
-    public handleFileChange(event: ChangeEvent<HTMLInputElement>, imageUrl: string, imageBytes: Uint8Array){
-        const file = event.target.files?.[0];
-        this.handleImageFile(file, imageUrl, imageBytes);
     };
     
     public handleImageFile(file: File | undefined, imageUrl: string, imageBytes: Uint8Array) {
