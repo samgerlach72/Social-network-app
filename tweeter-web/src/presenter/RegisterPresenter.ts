@@ -2,22 +2,25 @@ import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/model/UserService";
 import { Buffer } from "buffer";
 import { To, NavigateOptions } from "react-router-dom";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
-    displayErrorMessage: (message: string) => void;
-    updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void, 
-    navigate: (to: To, options?: NavigateOptions | undefined) => void,
-    setImageBytes: React.Dispatch<React.SetStateAction<Uint8Array>>,
-    setImageUrl: React.Dispatch<React.SetStateAction<string>>
+export interface RegisterView extends View{
+    updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void; 
+    navigate: (to: To, options?: NavigateOptions | undefined) => void;
+    setImageBytes: React.Dispatch<React.SetStateAction<Uint8Array>>;
+    setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export class RegisterPresenter{
-    private view: RegisterView;
+export class RegisterPresenter extends Presenter{
     private service: UserService;
 
     public constructor(view: RegisterView){
-        this.view = view;
+        super(view);
         this.service = new UserService();
+    }
+
+    protected get view(): RegisterView {
+      return super.view as RegisterView;
     }
 
     public checkSubmitButtonStatus(firstName: string, lastName: string, alias: string, password: string, imageUrl: string): boolean {
@@ -52,21 +55,10 @@ export class RegisterPresenter{
     };
     
     public async doRegister(firstName: string, lastName: string, alias: string, password: string, imageUrl: string, imageBytes: Uint8Array, rememberMeRef: React.MutableRefObject<boolean>) {
-        try {
-            let [user, authToken] = await this.service.register(
-                firstName,
-                lastName,
-                alias,
-                password,
-                imageBytes
-            );
-
-            this.view.updateUserInfo(user, user, authToken, rememberMeRef.current);
-            this.view.navigate("/");
-            } catch (error) {
-            this.view.displayErrorMessage(
-                `Failed to register user because of exception: ${error}`
-            );
-        }
+      this.doFailureReportingOperation(async() => {
+        let [user, authToken] = await this.service.register(firstName, lastName, alias, password, imageBytes);
+        this.view.updateUserInfo(user, user, authToken, rememberMeRef.current);
+        this.view.navigate("/");
+      }, "register user");  
     };
 }
