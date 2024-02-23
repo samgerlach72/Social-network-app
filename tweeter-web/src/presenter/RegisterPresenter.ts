@@ -11,7 +11,7 @@ export interface RegisterView extends View{
     setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export class RegisterPresenter extends Presenter{
+export class RegisterPresenter extends Presenter<RegisterView> {
     private service: UserService;
 
     public constructor(view: RegisterView){
@@ -19,12 +19,7 @@ export class RegisterPresenter extends Presenter{
         this.service = new UserService();
     }
 
-    protected get view(): RegisterView {
-      return super.view as RegisterView;
-    }
-
     public checkSubmitButtonStatus(firstName: string, lastName: string, alias: string, password: string, imageUrl: string): boolean {
-        console.log("first");
         return !firstName || !lastName || !alias || !password || !imageUrl;
     };
     

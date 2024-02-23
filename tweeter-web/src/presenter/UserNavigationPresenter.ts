@@ -7,16 +7,12 @@ export interface UserNavigationView extends View{
     setDisplayedUser: (user: User) => void
 }
 
-export class UserNavigationPresenter extends Presenter{
+export class UserNavigationPresenter extends Presenter<UserNavigationView> {
     private service: UserService;
 
     public constructor(view: UserNavigationView){
         super(view)
         this.service = new UserService();
-    }
-
-    protected get view(): UserNavigationView {
-        return super.view as UserNavigationView;
     }
 
     public async navigateToUser(event: React.MouseEvent, authToken: AuthToken, currentUser: User): Promise<void> {

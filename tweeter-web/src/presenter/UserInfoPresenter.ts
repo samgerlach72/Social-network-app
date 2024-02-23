@@ -8,7 +8,7 @@ export interface UserInfoView extends MessageView{
     setFollowersCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export class UserInfoPresenter extends Presenter{
+export class UserInfoPresenter extends Presenter<UserInfoView> {
     private service: FollowService;
 
     public constructor(view: UserInfoView){

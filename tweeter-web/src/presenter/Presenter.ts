@@ -7,14 +7,14 @@ export interface MessageView extends View {
     clearLastInfoMessage: () => void;
 }
 
-export class Presenter {
-    private _view: View;
+export class Presenter <T extends View>{
+    private _view: T;
 
-    protected constructor(view: View){
+    protected constructor(view: T){
         this._view = view;
     }
 
-    protected get view(): View {
+    protected get view(): T {
         return this._view
     }
 

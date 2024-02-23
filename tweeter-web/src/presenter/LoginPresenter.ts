@@ -9,16 +9,12 @@ export interface LoginView extends View {
     rememberMeRef: React.MutableRefObject<boolean>
 }
 
-export class LoginPresenter extends Presenter {
+export class LoginPresenter extends Presenter<LoginView> {
     private service: UserService;
 
     public constructor(view: LoginView){
         super(view)
         this.service = new UserService();
-    }
-
-    protected get view(): LoginView {
-      return super.view as LoginView;
     }
 
     public checkSubmitButtonStatus(alias: string, password: string) {

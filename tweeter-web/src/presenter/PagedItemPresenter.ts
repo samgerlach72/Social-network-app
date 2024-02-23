@@ -6,7 +6,7 @@ export interface PagedItemView<T> extends View{
     addItems: (items: T[]) => void;
 }
 
-export abstract class PagedItemPresenter<T, U> extends Presenter{
+export abstract class PagedItemPresenter<T, U> extends Presenter<PagedItemView<T>> {
     private _service: U;
     private _hasMoreItems: boolean = true;
     private _lastItem: T | null = null;
@@ -36,10 +36,6 @@ export abstract class PagedItemPresenter<T, U> extends Presenter{
 
     protected set lastItem(value: T | null) {
         this._lastItem = value;
-    }
-
-    protected get view(): PagedItemView<T> {
-        return super.view as PagedItemView<T>;
     }
 
     public async loadMoreItems(authToken: AuthToken, user: User) {
