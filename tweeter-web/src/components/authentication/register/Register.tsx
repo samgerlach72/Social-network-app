@@ -31,7 +31,7 @@ const Register = () => {
   };
   const presenter = new RegisterPresenter(listener);
   const doRegister = async () => {
-    presenter.doRegister(firstName, lastName, alias, password, imageUrl, imageBytes, rememberMeRef)
+    presenter.doRegister(firstName, lastName, alias, password, imageBytes, rememberMeRef)
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
