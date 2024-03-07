@@ -1,6 +1,6 @@
 import { User } from "tweeter-shared";
-import { PagedItemPresenter } from "../PagedItemPresenter";
-import { FollowService } from "../../model/model/FollowService";
+import { PagedItemPresenter } from "./PagedItemPresenter";
+import { FollowService } from "../model/model/FollowService";
 
 export abstract class UserItemPresenter extends PagedItemPresenter<User, FollowService>{
     protected createService(): FollowService {

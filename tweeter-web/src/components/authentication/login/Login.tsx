@@ -11,6 +11,7 @@ import { AuthenticationView } from "../../../presenter/AuthenticationPresenter";
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -26,9 +27,9 @@ const Login = (props: Props) => {
   const listener: AuthenticationView = {
     displayErrorMessage: displayErrorMessage,
     updateUserInfo: updateUserInfo,
-    navigate: navigate,
+    navigate: navigate
   };
-  const presenter = new LoginPresenter(listener);
+  const [presenter] = useState(props.presenter ?? new LoginPresenter(listener));
 
   const doLogin = async () => {
     presenter.doLogin(alias, password, props.originalUrl, rememberMeRef);
