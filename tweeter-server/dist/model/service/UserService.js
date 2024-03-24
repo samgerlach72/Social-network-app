@@ -23,5 +23,32 @@ class UserService {
         });
     }
     ;
+    logout(authToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Pause so we can see the logging out message. Delete when the call to the server is implemented.
+            yield new Promise((res) => setTimeout(res, 1000));
+        });
+    }
+    ;
+    register(firstName, lastName, alias, password, userImageBytes) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // Not neded now, but will be needed when you make the request to the server in milestone 3
+            let imageStringBase64 = Buffer.from(userImageBytes).toString("base64");
+            // TODO: Replace with the result of calling the server
+            let user = tweeter_shared_1.FakeData.instance.firstUser;
+            if (user === null) {
+                throw new Error("Invalid registration");
+            }
+            return [user, tweeter_shared_1.FakeData.instance.authToken];
+        });
+    }
+    ;
+    getUser(authToken, alias) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // TODO: Replace with the result of calling server
+            return tweeter_shared_1.FakeData.instance.findUserByAlias(alias);
+        });
+    }
+    ;
 }
 exports.UserService = UserService;

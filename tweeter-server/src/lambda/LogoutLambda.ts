@@ -1,8 +1,9 @@
-import {  } from "tweeter-shared";
+import { LogoutRequest } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
-export class LoginLambda{
-    handler = async(event: LogoutRequest) => {
-        await new UserService().logout(event.authToken);
+export class LogoutLambda{
+    handler = async(event: LogoutRequest): Promise<void> => {
+        let response = await new UserService().logout(event.authToken);
+        return response;
     }
 }
