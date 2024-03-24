@@ -83,7 +83,8 @@ export class GetIsFollowerStatusRequest {
     }
 }
 
-export class GetFollowerOrFolloweeCountRequest {
+//for getFolloweesCount, getFollowersCount, follow, unfollow
+export class GetCountOrFollowRequest {
     authToken: AuthToken;
     user: User;
 
@@ -92,3 +93,4 @@ export class GetFollowerOrFolloweeCountRequest {
         this.user = user;
     }
 }
+

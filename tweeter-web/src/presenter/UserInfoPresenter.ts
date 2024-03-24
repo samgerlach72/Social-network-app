@@ -56,10 +56,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     };
 
     public async follow(authToken: AuthToken, userToFollow: User): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the following message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
+        await this.service.follow(authToken, userToFollow);
+
         let followersCount = await this.service.getFollowersCount(authToken, userToFollow);
         let followeesCount = await this.service.getFolloweesCount(authToken, userToFollow);
     
@@ -78,10 +76,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     };
     
     public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<[followersCount: number, followeesCount: number]> {
-        // Pause so we can see the unfollowing message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-    
-        // TODO: Call the server
+        await this.service.unfollow(authToken, userToUnfollow);
     
         let followersCount = await this.service.getFollowersCount(authToken, userToUnfollow);
         let followeesCount = await this.service.getFolloweesCount(authToken, userToUnfollow);
