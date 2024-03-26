@@ -9,15 +9,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoadFeedLambda = void 0;
+exports.handler = exports.LoadFeedLambda = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 const StatusService_1 = require("../model/service/StatusService");
 class LoadFeedLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            let response = new tweeter_shared_1.LoadFeedOrStoryResponse(...(yield new StatusService_1.StatusService().loadMoreFeedItems(event.authToken, event.user, event.pageSize, event.lastItem)));
-            return response;
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            let event;
+            if (json.lastItem !== null && json.lastItem !== undefined) {
+                event = new tweeter_shared_1.LoadMoreItemsRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.User.fromJson(JSON.stringify(json.user)), json.pageSize, tweeter_shared_1.Status.fromJson(JSON.stringify(json.lastItem)));
+            }
+            else {
+                event = new tweeter_shared_1.LoadMoreItemsRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.User.fromJson(JSON.stringify(json.user)), json.pageSize, null);
+            }
+            try {
+                const response = new tweeter_shared_1.LoadFeedOrStoryResponse(...(yield new StatusService_1.StatusService().loadMoreFeedItems(event.authToken, event.user, event.pageSize, event.lastItem)), true, undefined);
+                return response;
+            }
+            catch (error) {
+                const response = new tweeter_shared_1.LoadFeedOrStoryResponse(null, null, false, error.message);
+                return response;
+            }
         });
     }
 }
 exports.LoadFeedLambda = LoadFeedLambda;
+exports.handler = new LoadFeedLambda().handler;

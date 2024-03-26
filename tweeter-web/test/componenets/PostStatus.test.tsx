@@ -41,7 +41,6 @@ describe("PostStatus Componenent", () => {
         const { postStatusButton, clearButton, postStatusTextArea, user } = renderPostStatusAndGetElements();
 
         await user.type(postStatusTextArea, "a"); 
-        // console.log(postStatusTextArea);
         expect(postStatusButton).toBeEnabled();
         expect(clearButton).toBeEnabled();
     });

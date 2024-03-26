@@ -9,15 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RegisterLambda = void 0;
+exports.handler = exports.RegisterLambda = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class RegisterLambda {
     constructor() {
         this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            let response = new tweeter_shared_1.AuthenticateResponse(...(yield new UserService_1.UserService().register(event.firstName, event.lastName, event.alias, event.password, event.userImageBytes)));
-            return response;
+            try {
+                let response = new tweeter_shared_1.AuthenticateResponse(...(yield new UserService_1.UserService().register(event.firstName, event.lastName, event.alias, event.password, event.userImageBytes)), true, undefined);
+                return response;
+            }
+            catch (error) {
+                let response = new tweeter_shared_1.AuthenticateResponse(null, null, false, error.message);
+                return response;
+            }
         });
     }
 }
 exports.RegisterLambda = RegisterLambda;
+exports.handler = new RegisterLambda().handler;

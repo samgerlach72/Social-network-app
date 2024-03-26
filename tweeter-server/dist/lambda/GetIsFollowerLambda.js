@@ -9,15 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetIsFollowerLambda = void 0;
+exports.handler = exports.GetIsFollowerLambda = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 const FollowService_1 = require("../model/service/FollowService");
 class GetIsFollowerLambda {
     constructor() {
         this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            let response = new tweeter_shared_1.GetIsFollowerStatusResponse(yield new FollowService_1.FollowService().getIsFollowerStatus(event.authToken, event.user, event.selectedUser));
-            return response;
+            try {
+                const response = new tweeter_shared_1.GetIsFollowerStatusResponse(yield new FollowService_1.FollowService().getIsFollowerStatus(event.authToken, event.user, event.selectedUser), true, undefined);
+                return response;
+            }
+            catch (error) {
+                const response = new tweeter_shared_1.GetIsFollowerStatusResponse(false, false, error.message);
+                return response;
+            }
         });
     }
 }
 exports.GetIsFollowerLambda = GetIsFollowerLambda;
+exports.handler = new GetIsFollowerLambda().handler;

@@ -9,16 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUserLambda = void 0;
+exports.handler = exports.GetUserLambda = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class GetUserLambda {
     constructor() {
         this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            yield new UserService_1.UserService().getUser(event.authToken, event.alias);
-            let response = new tweeter_shared_1.GetUserResponse(yield new UserService_1.UserService().getUser(event.authToken, event.alias));
-            return response;
+            try {
+                const user = yield new UserService_1.UserService().getUser(event.authToken, event.alias);
+                return new tweeter_shared_1.GetUserResponse(user, true, undefined);
+            }
+            catch (error) {
+                const errorMessage = error.message;
+                return new tweeter_shared_1.GetUserResponse(null, false, errorMessage);
+            }
         });
     }
 }
 exports.GetUserLambda = GetUserLambda;
+exports.handler = new GetUserLambda().handler;

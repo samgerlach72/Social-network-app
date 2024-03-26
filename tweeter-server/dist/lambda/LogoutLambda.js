@@ -9,14 +9,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LogoutLambda = void 0;
+exports.handler = exports.LogoutLambda = void 0;
+const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class LogoutLambda {
     constructor() {
         this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            let response = yield new UserService_1.UserService().logout(event.authToken);
-            return response;
+            try {
+                yield new UserService_1.UserService().logout(event.authToken);
+                let response = new tweeter_shared_1.TweeterResponse(true, undefined);
+                return response;
+            }
+            catch (error) {
+                let response = new tweeter_shared_1.TweeterResponse(false, error.message);
+                return response;
+            }
         });
     }
 }
 exports.LogoutLambda = LogoutLambda;
+exports.handler = new LogoutLambda().handler;

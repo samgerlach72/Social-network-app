@@ -3,7 +3,15 @@ import { UserService } from "../model/service/UserService";
 
 export class LoginLambda{
     handler = async(event: LoginRequest): Promise<AuthenticateResponse> => {
-        let response = new AuthenticateResponse(...(await new UserService().login(event.username, event.password)));
-        return response;
+        try {
+            const [user, token] = await new UserService().login(event.username, event.password);
+            const response = new AuthenticateResponse(user, token, true, undefined);
+            return response;
+        } catch (error) {
+            const response = new AuthenticateResponse(null, null, false, (error as Error).message);
+            return response;
+        }
     }
 }
+
+export const handler = new LoginLambda().handler;
