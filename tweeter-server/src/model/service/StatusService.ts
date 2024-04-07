@@ -1,4 +1,9 @@
 import { AuthToken, User, Status, FakeData } from "tweeter-shared";
+import { FeedDAO } from "../concreteDao/FeedDao";
+import { AuthTokenDAO } from "../concreteDao/AuthtokenDao";
+import { StoryDAO } from "../concreteDao/StoryDao";
+import { UsersDAO } from "../concreteDao/UsersDao";
+import { FollowsDAO } from "../concreteDao/FollowsDao";
 
 export class StatusService {
     public async loadMoreFeedItems(
@@ -7,8 +12,8 @@ export class StatusService {
         pageSize: number,
         lastItem: Status | null
     ): Promise<[Status[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        await new AuthTokenDAO().validateAuthtoken(authToken);
+        return await new FeedDAO().getPageOfFeedItems(user.alias, pageSize, lastItem !== null ? lastItem : undefined);
     };
     
     public async loadMoreStoryItems(
@@ -17,16 +22,19 @@ export class StatusService {
         pageSize: number,
         lastItem: Status | null
     ): Promise<[Status[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        await new AuthTokenDAO().validateAuthtoken(authToken);
+        return await new StoryDAO().getPageOfStoryItems(user.alias, pageSize, lastItem !== null ? lastItem : undefined);
     };
 
     public async postStatus(
         authToken: AuthToken,
         newStatus: Status
     ): Promise<void>{
-        // Pause so we can see the logging out message. Remove when connected to the server
-        await new Promise((f) => setTimeout(f, 2000));
-        // TODO: Call the server to post the status
+        await new AuthTokenDAO().validateAuthtoken(authToken);
+        await new StoryDAO().putStatus(newStatus);
+        const followers = await new FollowsDAO().getAllFollowerAliasses(newStatus.user.alias);
+        for (let i = 0; i < followers.length; i++) {
+            await new FeedDAO().putStatus(newStatus, followers[i]);
+        }
     };
 }

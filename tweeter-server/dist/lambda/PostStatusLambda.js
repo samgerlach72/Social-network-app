@@ -14,16 +14,14 @@ const tweeter_shared_1 = require("tweeter-shared");
 const StatusService_1 = require("../model/service/StatusService");
 class PostStatusLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield new StatusService_1.StatusService().postStatus(event.authToken, event.newStatus);
-                let response = new tweeter_shared_1.TweeterResponse(true, undefined);
-                return response;
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.authToken || !json.newStatus) {
+                throw new Error("[Bad Request] Request is missing authToken or newStatus");
             }
-            catch (error) {
-                let response = new tweeter_shared_1.TweeterResponse(false, error.message);
-                return response;
-            }
+            let event = new tweeter_shared_1.PostStatusRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.Status.fromJson(JSON.stringify(json.newStatus)));
+            yield new StatusService_1.StatusService().postStatus(event.authToken, event.newStatus);
+            let response = new tweeter_shared_1.TweeterResponse(true, undefined);
+            return response;
         });
     }
 }

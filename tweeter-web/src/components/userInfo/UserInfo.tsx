@@ -27,10 +27,12 @@ const UserInfo = () => {
   }
 
   useEffect(() => {
-    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
-    presenter.setNumbFollowees(authToken!, displayedUser!);
-    presenter.setNumbFollowers(authToken!, displayedUser!);
-  });
+    if (currentUser && authToken && displayedUser) {
+      presenter.setIsFollowerStatus(authToken, currentUser, displayedUser);
+      presenter.setNumbFollowees(authToken, displayedUser);
+      presenter.setNumbFollowers(authToken, displayedUser);
+    }
+  }, [currentUser, authToken, displayedUser]);
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
     event.preventDefault();
@@ -41,14 +43,22 @@ const UserInfo = () => {
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.followDisplayedUser(authToken!, displayedUser!);
+    presenter.followDisplayedUser(authToken!, currentUser!, displayedUser!);
+    // Update follower status and counts after unfollowing
+    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
+    presenter.setNumbFollowees(authToken!, displayedUser!);
+    presenter.setNumbFollowers(authToken!, displayedUser!);
   };
 
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
     event.preventDefault();
-    presenter.unfollowDisplayedUser(authToken!, displayedUser!)
+    presenter.unfollowDisplayedUser(authToken!, currentUser!, displayedUser!);
+    // Update follower status and counts after unfollowing
+    presenter.setIsFollowerStatus(authToken!, currentUser!, displayedUser!);
+    presenter.setNumbFollowees(authToken!, displayedUser!);
+    presenter.setNumbFollowers(authToken!, displayedUser!);
   };
 
   return (

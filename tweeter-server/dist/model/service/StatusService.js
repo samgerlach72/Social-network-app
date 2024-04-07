@@ -10,27 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatusService = void 0;
-const tweeter_shared_1 = require("tweeter-shared");
+const FeedDao_1 = require("../concreteDao/FeedDao");
+const AuthtokenDao_1 = require("../concreteDao/AuthtokenDao");
+const StoryDao_1 = require("../concreteDao/StoryDao");
 class StatusService {
     loadMoreFeedItems(authToken, user, pageSize, lastItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FeedDao_1.FeedDAO().getPageOfFeedItems(user.alias, pageSize, lastItem !== null ? lastItem : undefined);
         });
     }
     ;
     loadMoreStoryItems(authToken, user, pageSize, lastItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new StoryDao_1.StoryDAO().getPageOfStoryItems(user.alias, pageSize, lastItem !== null ? lastItem : undefined);
         });
     }
     ;
     postStatus(authToken, newStatus) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Pause so we can see the logging out message. Remove when connected to the server
-            yield new Promise((f) => setTimeout(f, 2000));
-            // TODO: Call the server to post the status
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            yield new StoryDao_1.StoryDAO().putStatus(newStatus);
         });
     }
     ;

@@ -2,7 +2,11 @@ import { LoginRequest, AuthenticateResponse } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 
 export class LoginLambda{
-    handler = async(event: LoginRequest): Promise<AuthenticateResponse> => {
+    handler = async(json: LoginRequest): Promise<AuthenticateResponse> => {
+        if (!json.username || !json.password){
+            throw new Error("[Bad Request] Request is missing username or password");
+        }
+        let event: LoginRequest = new LoginRequest(json.username, json.password);
         try {
             const [user, token] = await new UserService().login(event.username, event.password);
             const response = new AuthenticateResponse(user, token, true, undefined);

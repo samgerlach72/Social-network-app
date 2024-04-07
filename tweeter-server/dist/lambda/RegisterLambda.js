@@ -15,14 +15,11 @@ const UserService_1 = require("../model/service/UserService");
 class RegisterLambda {
     constructor() {
         this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let response = new tweeter_shared_1.AuthenticateResponse(...(yield new UserService_1.UserService().register(event.firstName, event.lastName, event.alias, event.password, event.userImageBytes)), true, undefined);
-                return response;
+            if (!event.firstName || !event.lastName || !event.alias || !event.password || !event.userImageBytes) {
+                throw new Error("[Bad Request] Request is missing firstname, lastname, alias, password, or userImageBytes");
             }
-            catch (error) {
-                let response = new tweeter_shared_1.AuthenticateResponse(null, null, false, error.message);
-                return response;
-            }
+            let response = new tweeter_shared_1.AuthenticateResponse(...(yield new UserService_1.UserService().register(event.firstName, event.lastName, event.alias, event.password, event.userImageBytes)), true, undefined);
+            return response;
         });
     }
 }

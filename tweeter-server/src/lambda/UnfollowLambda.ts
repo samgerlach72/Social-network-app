@@ -1,16 +1,15 @@
-import { GetCountOrFollowRequest, TweeterRequest, TweeterResponse } from "tweeter-shared";
+import { AuthToken, GetIsFollowerOrFollowRequest, TweeterResponse, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
 
 export class UnfollowLambda{
-    handler = async(event: GetCountOrFollowRequest): Promise<TweeterResponse> => {
-        try {
-            await new FollowService().unfollow(event.authToken, event.user);
-            let response = new TweeterResponse(true, undefined)
-            return response;
-        } catch(error) {
-            let response = new TweeterResponse(false, (error as Error).message)
-            return response;
+    handler = async(json: GetIsFollowerOrFollowRequest): Promise<TweeterResponse> => {
+        if (!json.authToken || !json.user || !json.selectedUser){
+            throw new Error("[Bad Request] Request is missing user or authToken");
         }
+        let event: GetIsFollowerOrFollowRequest = new GetIsFollowerOrFollowRequest(AuthToken.fromJson(JSON.stringify(json.authToken))!, User.fromJson(JSON.stringify(json.user))!, User.fromJson(JSON.stringify(json.selectedUser))!);
+        await new FollowService().unfollow(event.authToken, event.user, event.selectedUser);
+        let response = new TweeterResponse(true, undefined)
+        return response;
     }
 }
 

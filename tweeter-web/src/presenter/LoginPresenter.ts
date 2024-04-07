@@ -15,7 +15,7 @@ export class LoginPresenter extends AuthenticationPresenter<AuthenticationView> 
 
   public async doLogin(alias: string, password: string, originalUrl: string | undefined, rememberMeRef: React.MutableRefObject<boolean>) {
     this.doFailureReportingOperation(async() => {
-      this.doAuthenticationOperation(alias, password, rememberMeRef, originalUrl);
+      await this.doAuthenticationOperation(alias, password, rememberMeRef, originalUrl);
     }, "log user in");
   };
 

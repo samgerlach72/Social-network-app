@@ -1,4 +1,6 @@
 import { AuthToken, User, FakeData } from "tweeter-shared";
+import { FollowsDAO } from "../concreteDao/FollowsDao";
+import { AuthTokenDAO } from "../concreteDao/AuthtokenDao";
 
 export class FollowService {
     public async loadMoreFollowers(
@@ -7,8 +9,8 @@ export class FollowService {
         pageSize: number,
         lastItem: User | null
       ): Promise<[User[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
+        await new AuthTokenDAO().validateAuthtoken(authToken);
+        return await new FollowsDAO().getPageOfFollowers(user.alias, pageSize, lastItem?.alias);
     };
   
     public async loadMoreFollowees(
@@ -17,8 +19,8 @@ export class FollowService {
         pageSize: number,
         lastItem: User | null
       ): Promise<[User[], boolean]> {
-        // TODO: Replace with the result of calling server
-        return FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
+        await new AuthTokenDAO().validateAuthtoken(authToken);
+        return await new FollowsDAO().getPageOfFollowees(user.alias, pageSize, lastItem?.alias);
     };
   
     public async getIsFollowerStatus(
@@ -26,33 +28,33 @@ export class FollowService {
       user: User,
       selectedUser: User
     ): Promise<boolean> {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.isFollower();
+      await new AuthTokenDAO().validateAuthtoken(authToken);
+      return await new FollowsDAO().getIsFollower(selectedUser.alias, user.alias);
     };
   
     public async getFolloweesCount(
       authToken: AuthToken,
       user: User
     ): Promise<number> {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.getFolloweesCount(user);
+      await new AuthTokenDAO().validateAuthtoken(authToken);
+      return await new FollowsDAO().getFolloweesCount(user.alias);
     };
   
     public async getFollowersCount(
       authToken: AuthToken,
       user: User
     ): Promise<number> {
-      // TODO: Replace with the result of calling server
-      return FakeData.instance.getFollowersCount(user);
+      await new AuthTokenDAO().validateAuthtoken(authToken);
+      return await new FollowsDAO().getFollowersCount(user.alias);
     };
     
-    public async follow(authToken: AuthToken, userToFollow: User): Promise<void> {
-      // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-      await new Promise((f) => setTimeout(f, 2000));
+    public async follow(authToken: AuthToken, selectedUser: User, userToFollow: User): Promise<void> {
+      await new AuthTokenDAO().validateAuthtoken(authToken);
+      await new FollowsDAO().putFollow(selectedUser, userToFollow);
     };
 
-    public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<void> {
-      // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-      await new Promise((f) => setTimeout(f, 2000));
+    public async unfollow(authToken: AuthToken, selectedUser: User, userToUnfollow: User): Promise<void> {
+      await new AuthTokenDAO().validateAuthtoken(authToken);
+      await new FollowsDAO().deleteFollow(selectedUser.alias, userToUnfollow.alias);
     };
 }

@@ -19,12 +19,11 @@ const ItemScroller = <T, U>(props: Props<T, U>) => {
   const itemsReference = useRef(items);
   itemsReference.current = items;
 
-  const { displayedUser, authToken } = useUserInfo();
+  const { currentUser, authToken } = useUserInfo();
 
   // Load initial items
   useEffect(() => {
     loadMoreItems();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const listener: PagedItemView<T> = {
@@ -35,7 +34,7 @@ const ItemScroller = <T, U>(props: Props<T, U>) => {
   const [presenter] = useState(props.PresenterGenerator(listener));
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems(authToken!, displayedUser!);
+    presenter.loadMoreItems(authToken!, currentUser!);
   };
 
   return (

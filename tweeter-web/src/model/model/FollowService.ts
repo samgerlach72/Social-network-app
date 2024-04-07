@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData, LoadFeedOrStoryResponse, LoginRequest, LoadMoreItemsRequest, GetIsFollowerStatusResponse, GetIsFollowerStatusRequest, GetCountOrFollowRequest, GetFollowerOrFolloweeCountResponse } from "tweeter-shared";
+import { AuthToken, User, FakeData, LoadFeedOrStoryResponse, LoginRequest, LoadMoreItemsRequest, GetIsFollowerStatusResponse, GetIsFollowerOrFollowRequest, GetCountRequest, GetFollowerOrFolloweeCountResponse } from "tweeter-shared";
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class FollowService {
@@ -27,7 +27,7 @@ export class FollowService {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-      const getIsFollowerStatusResponse: GetIsFollowerStatusResponse = await new ServerFacade().getIsFollowerStatus(new GetIsFollowerStatusRequest(authToken, user, selectedUser));
+      const getIsFollowerStatusResponse: GetIsFollowerStatusResponse = await new ServerFacade().getIsFollowerStatus(new GetIsFollowerOrFollowRequest(authToken, user, selectedUser));
       return getIsFollowerStatusResponse.isFollower!;
   };
 
@@ -35,7 +35,7 @@ export class FollowService {
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-      const getFollowerOrFolloweeCountResponse: GetFollowerOrFolloweeCountResponse = await new ServerFacade().getFolloweesCount(new GetCountOrFollowRequest(authToken, user));
+      const getFollowerOrFolloweeCountResponse: GetFollowerOrFolloweeCountResponse = await new ServerFacade().getFolloweesCount(new GetCountRequest(authToken, user));
       return getFollowerOrFolloweeCountResponse.count!;
   };
 
@@ -43,15 +43,15 @@ export class FollowService {
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-      const getFollowerOrFolloweeCountResponse: GetFollowerOrFolloweeCountResponse = await new ServerFacade().getFollowersCount(new GetCountOrFollowRequest(authToken, user));
+      const getFollowerOrFolloweeCountResponse: GetFollowerOrFolloweeCountResponse = await new ServerFacade().getFollowersCount(new GetCountRequest(authToken, user));
       return getFollowerOrFolloweeCountResponse.count!;
   };
 
-  public async follow(authToken: AuthToken, userToFollow: User): Promise<void> {
-      await new ServerFacade().follow(new GetCountOrFollowRequest(authToken, userToFollow));
+  public async follow(authToken: AuthToken, currentUser: User, userToFollow: User): Promise<void> {
+      await new ServerFacade().follow(new GetIsFollowerOrFollowRequest(authToken, currentUser, userToFollow));
   };
 
-  public async unfollow(authToken: AuthToken, userToUnfollow: User): Promise<void> {
-    await new ServerFacade().follow(new GetCountOrFollowRequest(authToken, userToUnfollow));
+  public async unfollow(authToken: AuthToken, currentUser: User, userToUnfollow: User): Promise<void> {
+    await new ServerFacade().unfollow(new GetIsFollowerOrFollowRequest(authToken, currentUser, userToUnfollow));
   };
 }

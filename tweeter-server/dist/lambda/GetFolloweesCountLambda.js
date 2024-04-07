@@ -14,15 +14,13 @@ const tweeter_shared_1 = require("tweeter-shared");
 const FollowService_1 = require("../model/service/FollowService");
 class GetFolloweesCountLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let response = new tweeter_shared_1.GetFollowerOrFolloweeCountResponse(yield new FollowService_1.FollowService().getFolloweesCount(event.authToken, event.user), true, undefined);
-                return response;
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.authToken || !json.user) {
+                throw new Error("[Bad Request] Request is missing user or authToken");
             }
-            catch (error) {
-                const response = new tweeter_shared_1.GetFollowerOrFolloweeCountResponse(null, false, error.message);
-                return response;
-            }
+            let event = new tweeter_shared_1.GetCountRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.User.fromJson(JSON.stringify(json.user)));
+            let response = new tweeter_shared_1.GetFollowerOrFolloweeCountResponse(yield new FollowService_1.FollowService().getFolloweesCount(event.authToken, event.user), true, undefined);
+            return response;
         });
     }
 }

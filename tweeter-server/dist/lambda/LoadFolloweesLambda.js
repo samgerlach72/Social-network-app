@@ -14,15 +14,19 @@ const tweeter_shared_1 = require("tweeter-shared");
 const FollowService_1 = require("../model/service/FollowService");
 class LoadFolloweesLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let response = new tweeter_shared_1.LoadFeedOrStoryResponse(...(yield new FollowService_1.FollowService().loadMoreFollowees(event.authToken, event.user, event.pageSize, event.lastItem)), true, undefined);
-                return response;
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.authToken || !json.user || !json.pageSize) {
+                throw new Error("[Bad Request] Request is missing user, authToken, or page size");
             }
-            catch (error) {
-                let response = new tweeter_shared_1.LoadFeedOrStoryResponse(null, null, false, error.message);
-                return response;
+            let event;
+            if (!!json.lastItem) {
+                event = new tweeter_shared_1.LoadMoreItemsRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.User.fromJson(JSON.stringify(json.user)), json.pageSize, tweeter_shared_1.User.fromJson(JSON.stringify(json.lastItem)));
             }
+            else {
+                event = new tweeter_shared_1.LoadMoreItemsRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), tweeter_shared_1.User.fromJson(JSON.stringify(json.user)), json.pageSize, null);
+            }
+            let response = new tweeter_shared_1.LoadFeedOrStoryResponse(...(yield new FollowService_1.FollowService().loadMoreFollowees(event.authToken, event.user, event.pageSize, event.lastItem)), true, undefined);
+            return response;
         });
     }
 }

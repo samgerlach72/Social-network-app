@@ -1,4 +1,4 @@
-import { AuthToken, AuthenticateResponse, GetCountOrFollowRequest, GetFollowerOrFolloweeCountResponse, GetIsFollowerStatusRequest, GetIsFollowerStatusResponse, GetUserRequest, GetUserResponse, LoadFeedOrStoryResponse, LoadMoreItemsRequest, LoginRequest, LogoutRequest, PostStatusRequest, RegisterRequest, Status, TweeterResponse, User } from "tweeter-shared";
+import { AuthToken, AuthenticateResponse, GetCountRequest, GetFollowerOrFolloweeCountResponse, GetIsFollowerOrFollowRequest, GetIsFollowerStatusResponse, GetUserRequest, GetUserResponse, LoadFeedOrStoryResponse, LoadMoreItemsRequest, LoginRequest, LogoutRequest, PostStatusRequest, RegisterRequest, Status, TweeterResponse, User } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
@@ -9,7 +9,9 @@ export class ServerFacade {
 
   async login(request: LoginRequest): Promise<AuthenticateResponse>{
     const endpoint = "/login";
+    console.log("before doPost")
     const jsonResponse = await this.clientCommunicator.doPost<LoginRequest, AuthenticateResponse>(request, endpoint);
+    console.log(jsonResponse)
     return new AuthenticateResponse(User.fromJson(JSON.stringify(jsonResponse.user)), AuthToken.fromJson(JSON.stringify(jsonResponse.token)), jsonResponse.success, jsonResponse.message);
   }
 
@@ -57,33 +59,33 @@ export class ServerFacade {
     return new LoadFeedOrStoryResponse<User>(userList, jsonResponse.hasMoreItems, jsonResponse.success, jsonResponse.message);
   }
 
-  async getIsFollowerStatus(request: GetIsFollowerStatusRequest): Promise<GetIsFollowerStatusResponse>{
+  async getIsFollowerStatus(request: GetIsFollowerOrFollowRequest): Promise<GetIsFollowerStatusResponse>{
     const endpoint = "/get_is_follower";
-    const jsonResponse = await this.clientCommunicator.doPost<GetIsFollowerStatusRequest, GetIsFollowerStatusResponse>(request, endpoint);
+    const jsonResponse = await this.clientCommunicator.doPost<GetIsFollowerOrFollowRequest, GetIsFollowerStatusResponse>(request, endpoint);
     return new GetIsFollowerStatusResponse(jsonResponse.isFollower, jsonResponse.success, jsonResponse.message);
   }
 
-  async getFolloweesCount(request: GetCountOrFollowRequest): Promise<GetFollowerOrFolloweeCountResponse>{
+  async getFolloweesCount(request: GetCountRequest): Promise<GetFollowerOrFolloweeCountResponse>{
     const endpoint = "/get_followees_count";
-    const jsonResponse = await this.clientCommunicator.doPost<GetCountOrFollowRequest, GetFollowerOrFolloweeCountResponse>(request, endpoint);
+    const jsonResponse = await this.clientCommunicator.doPost<GetCountRequest, GetFollowerOrFolloweeCountResponse>(request, endpoint);
     return new GetFollowerOrFolloweeCountResponse(jsonResponse.count, jsonResponse.success, jsonResponse.message);
   }
 
-  async getFollowersCount(request: GetCountOrFollowRequest): Promise<GetFollowerOrFolloweeCountResponse>{
+  async getFollowersCount(request: GetCountRequest): Promise<GetFollowerOrFolloweeCountResponse>{
     const endpoint = "/get_followers_count";
-    const jsonResponse = await this.clientCommunicator.doPost<GetCountOrFollowRequest, GetFollowerOrFolloweeCountResponse>(request, endpoint);
+    const jsonResponse = await this.clientCommunicator.doPost<GetCountRequest, GetFollowerOrFolloweeCountResponse>(request, endpoint);
     return new GetFollowerOrFolloweeCountResponse(jsonResponse.count, jsonResponse.success, jsonResponse.message);
   }
 
-  async follow(request: GetCountOrFollowRequest): Promise<TweeterResponse>{
+  async follow(request: GetIsFollowerOrFollowRequest): Promise<TweeterResponse>{
     const endpoint = "/follow";
-    const jsonResponse = await this.clientCommunicator.doPost<GetCountOrFollowRequest, TweeterResponse>(request, endpoint);
+    const jsonResponse = await this.clientCommunicator.doPost<GetIsFollowerOrFollowRequest, TweeterResponse>(request, endpoint);
     return new TweeterResponse(jsonResponse.success, jsonResponse.message);
   }
 
-  async unfollow(request: GetCountOrFollowRequest): Promise<TweeterResponse>{
+  async unfollow(request: GetIsFollowerOrFollowRequest): Promise<TweeterResponse>{
     const endpoint = "/unfollow";
-    const jsonResponse = await this.clientCommunicator.doPost<GetCountOrFollowRequest, TweeterResponse>(request, endpoint);
+    const jsonResponse = await this.clientCommunicator.doPost<GetIsFollowerOrFollowRequest, TweeterResponse>(request, endpoint);
     return new TweeterResponse(jsonResponse.success, jsonResponse.message);
   }
 

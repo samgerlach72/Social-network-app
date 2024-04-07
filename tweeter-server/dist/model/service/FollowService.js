@@ -10,54 +10,55 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FollowService = void 0;
-const tweeter_shared_1 = require("tweeter-shared");
+const FollowsDao_1 = require("../concreteDao/FollowsDao");
+const AuthtokenDao_1 = require("../concreteDao/AuthtokenDao");
 class FollowService {
     loadMoreFollowers(authToken, user, pageSize, lastItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FollowsDao_1.FollowsDAO().getPageOfFollowers(user.alias, pageSize, lastItem === null || lastItem === void 0 ? void 0 : lastItem.alias);
         });
     }
     ;
     loadMoreFollowees(authToken, user, pageSize, lastItem) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getPageOfUsers(lastItem, pageSize, user);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FollowsDao_1.FollowsDAO().getPageOfFollowees(user.alias, pageSize, lastItem === null || lastItem === void 0 ? void 0 : lastItem.alias);
         });
     }
     ;
     getIsFollowerStatus(authToken, user, selectedUser) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.isFollower();
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FollowsDao_1.FollowsDAO().getIsFollower(selectedUser.alias, user.alias);
         });
     }
     ;
     getFolloweesCount(authToken, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getFolloweesCount(user);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FollowsDao_1.FollowsDAO().getFolloweesCount(user.alias);
         });
     }
     ;
     getFollowersCount(authToken, user) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.getFollowersCount(user);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            return yield new FollowsDao_1.FollowsDAO().getFollowersCount(user.alias);
         });
     }
     ;
-    follow(authToken, userToFollow) {
+    follow(authToken, selectedUser, userToFollow) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-            yield new Promise((f) => setTimeout(f, 2000));
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            yield new FollowsDao_1.FollowsDAO().putFollow(selectedUser, userToFollow);
         });
     }
     ;
-    unfollow(authToken, userToUnfollow) {
+    unfollow(authToken, selectedUser, userToUnfollow) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-            yield new Promise((f) => setTimeout(f, 2000));
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            yield new FollowsDao_1.FollowsDAO().deleteFollow(selectedUser.alias, userToUnfollow.alias);
         });
     }
     ;

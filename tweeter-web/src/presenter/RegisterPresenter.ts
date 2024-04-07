@@ -48,7 +48,7 @@ export class RegisterPresenter extends AuthenticationPresenter<RegisterView> {
   
   public async doRegister(firstName: string, lastName: string, alias: string, password: string, imageBytes: Uint8Array, rememberMeRef: React.MutableRefObject<boolean>) {
     this.doFailureReportingOperation(async() => {
-      this.doAuthenticationOperation(alias, password, rememberMeRef, undefined, firstName, lastName, imageBytes);
+      await this.doAuthenticationOperation(alias, password, rememberMeRef, undefined, firstName, lastName, imageBytes);
     }, "register user");  
   };
 

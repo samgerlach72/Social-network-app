@@ -11,44 +11,79 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
+const ImageDao_1 = require("../concreteDao/ImageDao");
+const crypto_js_1 = require("crypto-js");
+const UsersDao_1 = require("../concreteDao/UsersDao");
+const AuthtokenDao_1 = require("../concreteDao/AuthtokenDao");
 class UserService {
     login(alias, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling the server
-            let user = tweeter_shared_1.FakeData.instance.firstUser;
-            if (user === null) {
-                throw new Error("Invalid alias or password");
+            const result = yield new UsersDao_1.UsersDAO().getUser(alias);
+            if (result === null) {
+                throw new Error("[Bad Request] Invalid alias or password");
             }
-            return [user, tweeter_shared_1.FakeData.instance.authToken];
+            const [user, hashedPassword] = result;
+            if (this.verifyPassword(password, hashedPassword)) {
+                const authtoken = tweeter_shared_1.AuthToken.Generate();
+                yield new AuthtokenDao_1.AuthTokenDAO().putAuthtoken(authtoken);
+                return [user, authtoken];
+            }
+            else {
+                throw new Error("[Bad Request] Invalid alias or password");
+            }
         });
     }
     ;
     logout(authToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-            yield new Promise((res) => setTimeout(res, 1000));
+            // // Pause so we can see the logging out message. Delete when the call to the server is implemented.
+            // await new Promise((res) => setTimeout(res, 1000));
+            yield new AuthtokenDao_1.AuthTokenDAO().deleteAuthtoken(authToken);
         });
     }
     ;
     register(firstName, lastName, alias, password, userImageBytes) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Not neded now, but will be needed when you make the request to the server in milestone 3
-            let imageStringBase64 = Buffer.from(userImageBytes).toString("base64");
-            // TODO: Replace with the result of calling the server
-            let user = tweeter_shared_1.FakeData.instance.firstUser;
+            let user = new tweeter_shared_1.User(firstName, lastName, alias, yield new ImageDao_1.ImageDao().putImage(alias, Buffer.from(userImageBytes).toString("base64")));
+            new UsersDao_1.UsersDAO().putUser(user, this.hashAndSaltPassword(password));
             if (user === null) {
-                throw new Error("Invalid registration");
+                throw new Error("[Bad Request] Invalid registration");
             }
-            return [user, tweeter_shared_1.FakeData.instance.authToken];
+            const authtoken = tweeter_shared_1.AuthToken.Generate();
+            yield new AuthtokenDao_1.AuthTokenDAO().putAuthtoken(authtoken);
+            return [user, authtoken];
         });
     }
     ;
     getUser(authToken, alias) {
         return __awaiter(this, void 0, void 0, function* () {
-            // TODO: Replace with the result of calling server
-            return tweeter_shared_1.FakeData.instance.findUserByAlias(alias);
+            yield new AuthtokenDao_1.AuthTokenDAO().validateAuthtoken(authToken);
+            const result = yield new UsersDao_1.UsersDAO().getUser(alias);
+            if (result === null) {
+                throw new Error("[Bad Request] Invalid alias");
+            }
+            return result[0];
         });
     }
     ;
+    hashAndSaltPassword(password) {
+        const salt = this.generateSalt();
+        let hashedPassword = salt + password;
+        for (let i = 0; i < 1000; i++) {
+            hashedPassword = (0, crypto_js_1.SHA256)(hashedPassword).toString(crypto_js_1.enc.Base64);
+        }
+        return `${salt}.${hashedPassword}`;
+    }
+    generateSalt() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+    verifyPassword(password, hashedAndSaltedPassword) {
+        const [salt, storedHashedPassword] = hashedAndSaltedPassword.split('.');
+        let hashedPassword = salt + password;
+        for (let i = 0; i < 1000; i++) {
+            hashedPassword = (0, crypto_js_1.SHA256)(hashedPassword).toString(crypto_js_1.enc.Base64);
+        }
+        return hashedPassword === storedHashedPassword;
+    }
 }
 exports.UserService = UserService;

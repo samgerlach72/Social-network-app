@@ -14,15 +14,13 @@ const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class GetUserLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const user = yield new UserService_1.UserService().getUser(event.authToken, event.alias);
-                return new tweeter_shared_1.GetUserResponse(user, true, undefined);
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.authToken || !json.alias) {
+                throw new Error("[Bad Request] Request is missing authToken or alias");
             }
-            catch (error) {
-                const errorMessage = error.message;
-                return new tweeter_shared_1.GetUserResponse(null, false, errorMessage);
-            }
+            let event = new tweeter_shared_1.GetUserRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)), json.alias);
+            const user = yield new UserService_1.UserService().getUser(event.authToken, event.alias);
+            return new tweeter_shared_1.GetUserResponse(user, true, undefined);
         });
     }
 }

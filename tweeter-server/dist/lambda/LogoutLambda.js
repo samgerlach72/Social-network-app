@@ -14,16 +14,14 @@ const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class LogoutLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield new UserService_1.UserService().logout(event.authToken);
-                let response = new tweeter_shared_1.TweeterResponse(true, undefined);
-                return response;
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.authToken) {
+                throw new Error("[Bad Request] Request is missing authToken");
             }
-            catch (error) {
-                let response = new tweeter_shared_1.TweeterResponse(false, error.message);
-                return response;
-            }
+            let event = new tweeter_shared_1.LogoutRequest(tweeter_shared_1.AuthToken.fromJson(JSON.stringify(json.authToken)));
+            yield new UserService_1.UserService().logout(event.authToken);
+            let response = new tweeter_shared_1.TweeterResponse(true, undefined);
+            return response;
         });
     }
 }

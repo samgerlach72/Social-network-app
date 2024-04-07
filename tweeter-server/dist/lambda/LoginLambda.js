@@ -14,7 +14,11 @@ const tweeter_shared_1 = require("tweeter-shared");
 const UserService_1 = require("../model/service/UserService");
 class LoginLambda {
     constructor() {
-        this.handler = (event) => __awaiter(this, void 0, void 0, function* () {
+        this.handler = (json) => __awaiter(this, void 0, void 0, function* () {
+            if (!json.username || !json.password) {
+                throw new Error("[Bad Request] Request is missing username or password");
+            }
+            let event = new tweeter_shared_1.LoginRequest(json.username, json.password);
             try {
                 const [user, token] = yield new UserService_1.UserService().login(event.username, event.password);
                 const response = new tweeter_shared_1.AuthenticateResponse(user, token, true, undefined);

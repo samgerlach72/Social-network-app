@@ -73,7 +73,7 @@ export class PostStatusRequest implements TweeterRequest {
     }
 }
 
-export class GetIsFollowerStatusRequest implements TweeterRequest {
+export class GetIsFollowerOrFollowRequest implements TweeterRequest {
     authToken: AuthToken;
     user: User;
     selectedUser: User;
@@ -86,7 +86,7 @@ export class GetIsFollowerStatusRequest implements TweeterRequest {
 }
 
 //for getFolloweesCount, getFollowersCount, follow, unfollow
-export class GetCountOrFollowRequest implements TweeterRequest {
+export class GetCountRequest implements TweeterRequest {
     authToken: AuthToken;
     user: User;
 
